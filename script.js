@@ -6,6 +6,7 @@ const category = document.getElementById("category")
 
 // Seleciona os elementos da lista
 const expenseList = document.querySelector("ul")
+const expensesQuantity = document.querySelector("aside header p span")
 
 // Obtem o valor do input, aceitando somente numeros
 amount.oninput = () => {
@@ -43,6 +44,7 @@ form.onsubmit = (event) => {
 }
 
 // Função que adiciona o objeto com uma nova despesa
+// Adiciona um novo item na lista
 function expenseAdd(newExpense){
     try {
         // Cria o elemento para adicionar o item(li) na lista(ul)
@@ -61,10 +63,11 @@ function expenseAdd(newExpense){
         // Cria o nome da despesa
         const expenseName = document.createElement("strong")
         expenseName.textContent = newExpense.expense
-        
         // Cria a categoria da despesa
         const expenseCategory = document.createElement("span")
         expenseCategory.textContent = newExpense.category_name
+        // Adiciona nome e categoria na div expense-info
+        expenseInfo.append(expenseName, expenseCategory)
 
         // Cria o valor da despesa
         const expenseAmount = document.createElement("span")
@@ -72,17 +75,38 @@ function expenseAdd(newExpense){
         // Substituindo o cifrão formatado pelo cifrão do css
         expenseAmount.innerHTML= `<small>R$</small>${newExpense.amount.toUpperCase().replace("R$", "")}`
 
-        // Adiciona nome e categoria na div expense-info
-        expenseInfo.append(expenseName, expenseCategory, expenseAmount)
+        // Cria o ícone de remover
+        const removeIcon = document.createElement("img")
+        removeIcon.classList.add("remove-icon")
+        removeIcon.setAttribute("src", "img/remove.svg")
+        removeIcon.setAttribute("alt", "img/remove.svg")
 
         // Adiciona as informacoes no item
-        expenseItem.append(expenseIcon, expenseInfo)
+        expenseItem.append(expenseIcon, expenseInfo, expenseAmount, removeIcon )
 
         // Adiciona o item na lista
         expenseList.append(expenseItem)
 
+        // Atualiza os totais
+        updateTotals()
+
     } catch (error) {
         alert("Não foi possível atualizar a lista de despesas.")
         console.log(error)
+    }
+}
+
+// Função que atualiza os totais
+function updateTotals(){
+    try{
+        // Recupera todos os itens(li) da lista (ul)
+        const items = expenseList.children
+
+        // Atualiza a quantidade de itens da lista
+        expensesQuantity.textContent = `${items.length} ${items.length > 1 ? "despesas" : "despesa"}`
+        
+    } catch (error){
+        console.log(error)
+        alert("Não foi possível atualizar os totais")
     }
 }
